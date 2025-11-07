@@ -1,0 +1,28 @@
+/* Tips Card (BEM) */
+
+.tips-card {
+  position: sticky;
+  top: 12px;
+  width: 320px;
+  align-self: start;
+
+  &__header {
+    display: inline-block;
+    padding: 4px 12px;
+    color: #181D27;
+    font-weight: 700;
+  }
+
+  &__content {
+    gap: 1rem;
+  }
+
+  &__tip-emphasis {
+    font-weight: 700;
+    color: #181D27;
+  }
+
+  &__tip-text {
+    color: #717680;
+  }
+}

@@ -5,4 +5,14 @@ node_modules/
 .env*
 !.env.example
 bun.lock
-next-env.d.ts
+next-en
+# Editor configuration
+.editorconfig
+v.d.ts
+
+# Editor configuration
+.editorconfig
+
+.vscode
+
+scripts

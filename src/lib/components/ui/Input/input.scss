@@ -1,0 +1,68 @@
+/* Input component styles converted from Tailwind utilities to SCSS */
+
+.input {
+  display: block;
+  width: 100%;
+  height: calc(2.75rem + 2px);
+  padding: 0.625rem 0.875rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #8898aa;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #cad1d7;
+  border-radius: 0.5rem;
+  box-shadow: none;
+  transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* File input button */
+  &::file-selector-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.75rem;
+    /* h-7 */
+    padding: 0 0.5rem;
+    margin-right: 0.5rem;
+    border: 0;
+    /* file:border-0 */
+    background: transparent;
+    /* file:bg-transparent */
+    color: var(--foreground);
+    /* file:text-foreground */
+    font-size: 0.875rem;
+    /* file:text-sm */
+    font-weight: 500;
+    /* file:font-medium */
+    cursor: pointer;
+  }
+
+  /* Focus ring */
+  &:focus-visible {
+    border-color: var(--ring);
+    box-shadow: 0 0 0 3px var(--ring-50, rgba(59, 130, 246, 0.5));
+  }
+
+  /* Aria invalid state */
+  &[aria-invalid="true"] {
+    border-color: var(--destructive);
+    box-shadow: 0 0 0 3px var(--destructive-20, rgba(239, 68, 68, 0.2));
+  }
+
+  /* Disabled */
+  &:disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+/* Dark mode tweaks (if using a `.dark` class on <html> or <body>) */
+.dark .input {
+  /* Representing dark:bg-input/30 — tint background slightly with input color if available */
+  background-color: var(--input-30, transparent);
+}
+
+.dark .input[aria-invalid="true"] {
+  box-shadow: 0 0 0 3px var(--destructive-40, rgba(239, 68, 68, 0.4));
+}

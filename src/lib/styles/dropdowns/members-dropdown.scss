@@ -1,0 +1,87 @@
+/* Members Dropdown Component - BEM Style */
+
+/* Block: members-dropdown */
+.members-dropdown {
+  /* Trigger button */
+  &__trigger {
+    width: 240px;
+    text-transform: capitalize;
+    color: #717680;
+  }
+
+  /* Button content wrapper */
+  &__trigger-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* User icon in trigger */
+  &__trigger-icon {
+    font-size: 20px;
+    margin-right: 0.5rem;
+  }
+
+  /* Caret icon on the right */
+  &__trigger-caret {
+    margin-left: 2.5rem; /* ml-10 */
+  }
+
+  /* Item avatar */
+  &__item-avatar {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Popover content adjustments for this dropdown */
+  &__popover-content {
+    padding: 0;
+  }
+
+  /* Command item row */
+  &__item {
+    padding: 10px 14px;
+  }
+
+  /* Text container for name + email */
+  &__item-text {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1 1 auto;
+    min-width: 0; /* allow children to shrink for ellipsis */
+    white-space: nowrap; /* force single line */
+  }
+
+  /* Member name */
+  &__item-name {
+    flex: 0 0 auto; /* do not shrink name */
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #181D27;
+  }
+
+  /* Member email */
+  &__item-email {
+    flex: 1 1 auto; /* allow email to take remaining space */
+    min-width: 0; /* required for text-overflow to work in flex container */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--muted-foreground, #717680);
+  }
+}
+
+/* Legacy support for old class names - can be removed after refactor */
+.member-text {
+  @extend .members-dropdown__item-text;
+}
+
+.member-name {
+  @extend .members-dropdown__item-name;
+}
+
+.member-email {
+  @extend .members-dropdown__item-email;
+}

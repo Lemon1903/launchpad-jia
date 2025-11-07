@@ -1,0 +1,51 @@
+/* Career Step One Form (BEM) */
+
+.career-step-one {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* 24px */
+  padding-bottom: 1.5rem;
+
+  &__section-title {
+    display: inline-block;
+    padding: 4px 12px;
+    color: #181d27;
+    font-weight: 700;
+  }
+
+  &__row {
+    display: flex;
+    gap: 1rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+  }
+
+  &__team-access-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__team-access-title {
+    font-size: 0.875rem; /* 14px */
+    font-weight: 700;
+    color: #181d27;
+  }
+
+  &__team-access-subtitle {
+    font-size: 0.875rem; /* 14px */
+    color: #717680;
+  }
+
+  &__separator {
+    margin-block: 16px;
+  }
+
+  &__footnote {
+    font-size: 0.75rem; /* 12px */
+    color: #717680;
+    font-weight: 500;
+  }
+}

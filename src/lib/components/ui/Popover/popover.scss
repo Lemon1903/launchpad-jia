@@ -1,0 +1,95 @@
+/* Popover SCSS converted from Tailwind utilities */
+
+/* Content */
+[data-slot="popover-content"] {
+  background: #FFFFFF;
+  z-index: 50;
+  width: 20rem;
+  border: 1px solid #f5f5f5;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow:
+    0 4px 6px -2px #0A0D1208,
+    0 12px 16px -4px #0A0D1214;
+  outline: none;
+  transform-origin: var(--radix-popover-content-transform-origin);
+  transition:
+    transform 150ms ease,
+    opacity 150ms ease;
+
+  /* Open/close fade+zoom */
+  &[data-state="open"] {
+    animation: popover-zoom-in 150ms ease;
+  }
+  &[data-state="closed"] {
+    animation: popover-zoom-out 150ms ease;
+  }
+
+  /* Slide based on side */
+  &[data-side="top"] {
+    animation-name: popover-slide-in-bottom;
+  }
+  &[data-side="bottom"] {
+    animation-name: popover-slide-in-top;
+  }
+  &[data-side="left"] {
+    animation-name: popover-slide-in-right;
+  }
+  &[data-side="right"] {
+    animation-name: popover-slide-in-left;
+  }
+}
+
+@keyframes popover-zoom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes popover-zoom-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes popover-slide-in-top {
+  from {
+    transform: translateY(-0.5rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes popover-slide-in-bottom {
+  from {
+    transform: translateY(0.5rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes popover-slide-in-left {
+  from {
+    transform: translateX(-0.5rem);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes popover-slide-in-right {
+  from {
+    transform: translateX(0.5rem);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
