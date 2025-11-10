@@ -48,4 +48,31 @@
     color: #717680;
     font-weight: 500;
   }
+
+  &__salary-fieldset {
+    gap: 0.5rem;
+  }
+
+  &__salary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    & legend {
+      margin-bottom: 0;
+    }
+  }
+
+  &__salary-toggle {
+    justify-content: flex-end;
+
+    & label {
+      flex: none !important;
+    }
+  }
+
+  &__salary-toggle-label {
+    color: #414651;
+    font-size: 14px;
+  }
 }

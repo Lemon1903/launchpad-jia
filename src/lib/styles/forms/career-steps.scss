@@ -1,5 +1,30 @@
 /* Career Steps (BEM) - mirrors styles from career.module.scss (.career__steps ...) */
 
+/* Define animatable gradient stops for progress line */
+@property --progress-gradient-1 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #fccec0;
+}
+
+@property --progress-gradient-2 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #ebacc9;
+}
+
+@property --progress-gradient-3 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #ceb6da;
+}
+
+@property --progress-gradient-4 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #9fcaed;
+}
+
 .career-steps {
   display: flex;
   align-items: flex-start;
@@ -15,39 +40,111 @@
     &:not(:last-child) {
       flex: 1;
     }
+  }
 
-    &__top {
-      display: flex;
-      align-items: center;
-      width: 100%;
+  &__top {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__icon {
+    display: flex;
+    flex-shrink: 0;
+    width: 17px;
+    height: 17px;
+    transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+
+    &:hover,
+    &.active {
+      transform: scale(1.2);
     }
 
-    &__circle {
-      display: flex;
-      flex-shrink: 0;
-      width: 17px;
-      height: 17px;
+    &--circle {
+      fill: #d5d7da;
 
-      &__icon {
-        fill: #d5d7da;
+      &.active {
+        fill: #111827;
       }
     }
 
-    &__line {
-      flex: 1;
-      height: 4px;
-      background: #e9eaeb;
-      border-radius: 9999px;
-      margin-block: auto;
-      margin-inline: 12px;
+    &--completed {
+      fill: #111827;
     }
 
-    &__label {
-      margin-top: 12px;
-      margin-right: auto;
-      font-size: 14px;
-      font-weight: 700;
-      color: #717680;
+    &--error {
+      width: 20px;
+      height: 17px;
+      stroke: #f04438;
+      fill: none;
     }
+  }
+
+  &__line-wrapper {
+    position: relative;
+    flex: 1;
+    height: 4px;
+    margin-block: auto;
+    margin-inline: 12px;
+  }
+
+  &__line {
+    width: 100%;
+    height: 100%;
+    background: #e9eaeb;
+    border-radius: 9999px;
+  }
+
+  &__line-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 9999px;
+
+    /* Initial gradient stops */
+    --progress-gradient-1: #fccec0;
+    --progress-gradient-2: #ebacc9;
+    --progress-gradient-3: #ceb6da;
+    --progress-gradient-4: #9fcaed;
+
+    background: linear-gradient(
+      -90deg,
+      var(--progress-gradient-1) 0%,
+      var(--progress-gradient-2) 33%,
+      var(--progress-gradient-3) 66%,
+      var(--progress-gradient-4) 100%
+    );
+
+    transition:
+      width 300ms cubic-bezier(0.4, 0, 0.2, 1),
+      --progress-gradient-1 300ms cubic-bezier(0.4, 0, 0.2, 1),
+      --progress-gradient-2 300ms cubic-bezier(0.4, 0, 0.2, 1),
+      --progress-gradient-3 300ms cubic-bezier(0.4, 0, 0.2, 1),
+      --progress-gradient-4 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Completed state: full width */
+    &[data-state="completed"] {
+      width: 100%;
+    }
+
+    /* In progress state: half width */
+    &[data-state="in-progress"] {
+      width: 50%;
+    }
+
+    /* Not started state: no width */
+    &[data-state="not-started"] {
+      width: 0%;
+    }
+  }
+
+  &__label {
+    margin-top: 12px;
+    margin-right: auto;
+    font-size: 14px;
+    font-weight: 700;
+    color: #717680;
   }
 }

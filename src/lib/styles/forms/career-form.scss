@@ -21,44 +21,6 @@
     gap: 10px;
   }
 
-  &__button {
-    width: fit-content;
-    padding: 8px 16px;
-    border-radius: 60px;
-    white-space: nowrap;
-    cursor: pointer;
-
-    /* Unpublished button (secondary style) */
-    &--unpublished {
-      color: #414651;
-      background: #fff;
-      border: 1px solid #d5d7da;
-
-      &:disabled {
-        cursor: not-allowed;
-      }
-    }
-
-    /* Published button (primary style) */
-    &--published {
-      color: #fff;
-      background: black;
-      border: 1px solid #e9eaeb;
-
-      &:disabled {
-        background: #d5d7da;
-        cursor: not-allowed;
-      }
-    }
-
-    /* Icon inside button */
-    &__icon {
-      color: #fff;
-      font-size: 20px;
-      margin-right: 8px;
-    }
-  }
-
   &__separator {
     margin-block: 24px;
     width: 100%;

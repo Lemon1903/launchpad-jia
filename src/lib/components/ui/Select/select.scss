@@ -1,0 +1,337 @@
+/* Select (data-slot based styling) */
+
+[data-slot="select-trigger"] {
+  box-shadow: 1px 2px 0 #0a0d120d !important;
+  outline: none !important;
+
+  /* Placeholder state */
+  &[data-placeholder] {
+    color: #717680;
+  }
+
+  /* Size variants */
+  &[data-size="default"] {
+    height: auto;
+  }
+
+  &[data-size="sm"] {
+    height: 2rem;
+  }
+
+  /* Focus visible */
+  &:focus-visible {
+    border-color: var(--ring, #5e39d6);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring, #5e39d6) 20%, transparent) !important;
+  }
+
+  /* Invalid state */
+  &[aria-invalid="true"] {
+    border-color: #f04438;
+
+    &:focus-visible {
+      box-shadow: 0 0 0 3px color-mix(in srgb, #f04438 20%, transparent) !important;
+    }
+  }
+
+  /* Disabled */
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
+
+  /* Dark mode */
+  // @media (prefers-color-scheme: dark) {
+  //   background-color: color-mix(in srgb, var(--input) 30%, transparent);
+
+  //   &:hover {
+  //     background-color: color-mix(in srgb, var(--input) 50%, transparent);
+  //   }
+  // }
+
+  /* SVG icon styling */
+  svg:not([class*="text-"]) {
+    color: var(--muted-foreground);
+  }
+
+  svg {
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+
+  svg:not([class*="size-"]) {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  /* Select value styling */
+  [data-slot="select-value"] {
+    display: flex !important;
+    align-items: center;
+    gap: 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+  }
+}
+
+.select-trigger__icon {
+  width: 1rem;
+  height: 1rem;
+  opacity: 0.5;
+}
+
+[data-slot="select-content"] {
+  position: relative !important;
+  padding: 0 !important;
+  transform-origin: var(--radix-select-content-transform-origin);
+  max-height: var(--radix-select-content-available-height);
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  /* Animation states */
+  &[data-state="open"] {
+    animation:
+      fadeIn 150ms,
+      zoomIn 150ms;
+  }
+
+  &[data-state="closed"] {
+    animation:
+      fadeOut 150ms,
+      zoomOut 150ms;
+  }
+
+  /* Side animations */
+  &[data-side="bottom"] {
+    animation:
+      fadeIn 150ms,
+      zoomIn 150ms,
+      slideInFromTop 150ms;
+  }
+
+  &[data-side="left"] {
+    animation:
+      fadeIn 150ms,
+      zoomIn 150ms,
+      slideInFromRight 150ms;
+  }
+
+  &[data-side="right"] {
+    animation:
+      fadeIn 150ms,
+      zoomIn 150ms,
+      slideInFromLeft 150ms;
+  }
+
+  &[data-side="top"] {
+    animation:
+      fadeIn 150ms,
+      zoomIn 150ms,
+      slideInFromBottom 150ms;
+  }
+
+  /* Popper position adjustments */
+  &[data-position="popper"] {
+    &[data-side="bottom"] {
+      transform: translateY(0.25rem); /* 4px */
+    }
+
+    &[data-side="left"] {
+      transform: translateX(-0.25rem); /* -4px */
+    }
+
+    &[data-side="right"] {
+      transform: translateX(0.25rem); /* 4px */
+    }
+
+    &[data-side="top"] {
+      transform: translateY(-0.25rem); /* -4px */
+    }
+  }
+}
+
+[data-slot="select-viewport"] {
+  padding: 0.625rem;
+
+  &[data-position="popper"] {
+    height: var(--radix-select-trigger-height);
+    width: 100%;
+    min-width: var(--radix-select-trigger-width);
+    scroll-margin: 0.25rem; /* 4px */
+  }
+}
+
+[data-slot="select-label"] {
+  padding: 0.375rem 0.5rem; /* 6px 8px */
+  font-size: 0.75rem; /* 12px */
+  color: var(--muted-foreground);
+}
+
+[data-slot="select-item"] {
+  position: relative !important;
+  padding: 0.625rem 1rem !important;
+  border-bottom: 1px solid #ddd !important;
+
+  &:last-child {
+    border-bottom: none !important;
+  }
+
+  &.active {
+    background-color: #f8f9fc !important;
+    font-weight: 700 !important;
+  }
+
+  /* Disabled state */
+  &[data-disabled] {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  /* SVG styling */
+  svg:not([class*="text-"]) {
+    color: var(--muted-foreground);
+  }
+
+  svg {
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+
+  svg:not([class*="size-"]) {
+    width: 1rem; /* 16px */
+    height: 1rem; /* 16px */
+  }
+
+  /* Last span styling */
+  span:last-child {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* 8px */
+  }
+
+  &:has([data-slot="select-item-indicator"]) {
+    background-color: #f8f9fc;
+
+    & [data-slot="select-item-text"] {
+      font-weight: 700;
+    }
+  }
+}
+
+[data-slot="select-item-indicator"] {
+  position: absolute;
+  inset: 0;
+
+  & .icon {
+    position: absolute;
+    inset-block: 0;
+    right: 0;
+    margin-block: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+}
+
+[data-slot="select-item-text"] {
+  position: relative;
+  z-index: 20;
+}
+
+[data-slot="select-separator"] {
+  margin: 0.25rem -0.25rem; /* 4px -4px */
+  height: 1px;
+  background-color: var(--border);
+  pointer-events: none;
+}
+
+[data-slot="select-scroll-up-button"],
+[data-slot="select-scroll-down-button"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0; /* 4px 0 */
+  cursor: default;
+}
+
+.select-scroll-button__icon {
+  width: 1rem; /* 16px */
+  height: 1rem; /* 16px */
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.95);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes zoomOut {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0.95);
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-0.5rem); /* -8px */
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(0.5rem); /* 8px */
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-0.5rem); /* -8px */
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(0.5rem); /* 8px */
+  }
+  to {
+    transform: translateY(0);
+  }
+}

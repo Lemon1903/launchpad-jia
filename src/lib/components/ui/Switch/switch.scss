@@ -1,0 +1,101 @@
+/* Switch (data-slot based styling) */
+
+/* Define animatable gradient stops using @property */
+@property --gradient-stop-1 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #f5f5f5;
+}
+
+@property --gradient-stop-2 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #f5f5f5;
+}
+
+@property --gradient-stop-3 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #f5f5f5;
+}
+
+@property --gradient-stop-4 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #f5f5f5;
+}
+
+[data-slot="switch"] {
+  display: inline-flex;
+  height: 1.25rem;
+  width: 2.25rem;
+  padding: 2px;
+  flex-shrink: 0;
+  align-items: center;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  outline: none !important;
+
+  /* Initial gradient stops (unchecked state) */
+  --gradient-stop-1: #f5f5f5;
+  --gradient-stop-2: #f5f5f5;
+  --gradient-stop-3: #f5f5f5;
+  --gradient-stop-4: #f5f5f5;
+
+  background: linear-gradient(
+    90deg,
+    var(--gradient-stop-1) 0%,
+    var(--gradient-stop-2) 33%,
+    var(--gradient-stop-3) 66%,
+    var(--gradient-stop-4) 100%
+  );
+
+  transition:
+    --gradient-stop-1 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    --gradient-stop-2 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    --gradient-stop-3 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    --gradient-stop-4 150ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* State: checked - animate to gradient colors */
+  &[data-state="checked"] {
+    --gradient-stop-1: #fccec0;
+    --gradient-stop-2: #ebacc9;
+    --gradient-stop-3: #ceb6da;
+    --gradient-stop-4: #9fcaed;
+  }
+
+  /* Focus visible */
+  &:focus-visible {
+    border-color: var(--ring, #5e39d6);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring, #5e39d6) 20%, transparent);
+  }
+
+  /* Disabled */
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+[data-slot="switch-thumb"] {
+  pointer-events: none;
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 9999px;
+  background-color: #ffffff;
+  box-shadow:
+    0 1px 2px 0 #0a0d120f,
+    0 1px 3px 0 #0a0d121a;
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* State: unchecked - at start position */
+  &[data-state="unchecked"] {
+    transform: translateX(0);
+  }
+
+  /* State: checked - slide to end */
+  &[data-state="checked"] {
+    transform: translateX(calc(100% - 1px));
+  }
+}

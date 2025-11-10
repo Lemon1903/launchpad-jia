@@ -1,18 +1,14 @@
-"use client"
+"use client";
 
-import { Label } from "@/lib/components/ui/Label/label"
-import { Separator } from "@/lib/components/ui/Separator/separator"
-import { useMemo } from "react"
-import "./field.scss"
+import { useMemo } from "react";
+
+import { Label } from "@/lib/components/ui/Label/label";
+import { Separator } from "@/lib/components/ui/Separator/separator";
+
+import "./field.scss";
 
 function FieldSet({ className, ...props }: React.ComponentProps<"fieldset">) {
-  return (
-    <fieldset
-      data-slot="field-set"
-      className={className}
-      {...props}
-    />
-  )
+  return <fieldset data-slot="field-set" className={className} {...props} />;
 }
 
 function FieldLegend({
@@ -21,23 +17,12 @@ function FieldLegend({
   ...props
 }: React.ComponentProps<"legend"> & { variant?: "legend" | "label" }) {
   return (
-    <legend
-      data-slot="field-legend"
-      data-variant={variant}
-      className={className}
-      {...props}
-    />
-  )
+    <legend data-slot="field-legend" data-variant={variant} className={className} {...props} />
+  );
 }
 
 function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="field-group"
-      className={className}
-      {...props}
-    />
-  )
+  return <div data-slot="field-group" className={className} {...props} />;
 }
 
 function Field({
@@ -53,50 +38,23 @@ function Field({
       className={className}
       {...props}
     />
-  )
+  );
 }
 
 function FieldContent({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="field-content"
-      className={className}
-      {...props}
-    />
-  )
+  return <div data-slot="field-content" className={className} {...props} />;
 }
 
-function FieldLabel({
-  className,
-  ...props
-}: React.ComponentProps<typeof Label>) {
-  return (
-    <Label
-      data-slot="field-label"
-      className={className}
-      {...props}
-    />
-  )
+function FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>) {
+  return <Label data-slot="field-label" className={className} {...props} />;
 }
 
 function FieldTitle({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="field-label"
-      className={className}
-      {...props}
-    />
-  )
+  return <div data-slot="field-label" className={className} {...props} />;
 }
 
 function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
-  return (
-    <p
-      data-slot="field-description"
-      className={className}
-      {...props}
-    />
-  )
+  return <p data-slot="field-description" className={className} {...props} />;
 }
 
 function FieldSeparator({
@@ -104,25 +62,14 @@ function FieldSeparator({
   className,
   ...props
 }: React.ComponentProps<"div"> & {
-  children?: React.ReactNode
+  children?: React.ReactNode;
 }) {
   return (
-    <div
-      data-slot="field-separator"
-      data-content={!!children}
-      className={className}
-      {...props}
-    >
+    <div data-slot="field-separator" data-content={!!children} className={className} {...props}>
       <Separator data-slot="field-separator-line" />
-      {children && (
-        <span
-          data-slot="field-separator-content"
-        >
-          {children}
-        </span>
-      )}
+      {children && <span data-slot="field-separator-content">{children}</span>}
     </div>
-  )
+  );
 }
 
 function FieldError({
@@ -131,55 +78,51 @@ function FieldError({
   errors,
   ...props
 }: React.ComponentProps<"div"> & {
-  errors?: Array<{ message?: string } | undefined>
+  errors?: Array<{ message?: string } | undefined>;
 }) {
   const content = useMemo(() => {
     if (children) {
-      return children
+      return children;
     }
 
     if (!errors?.length) {
-      return null
+      return null;
     }
 
-    const uniqueErrors = [
-      ...new Map(errors.map((error) => [error?.message, error])).values(),
-    ]
+    const uniqueErrors = [...new Map(errors.map((error) => [error?.message, error])).values()];
 
     if (uniqueErrors?.length == 1) {
-      return uniqueErrors[0]?.message
+      return uniqueErrors[0]?.message;
     }
 
     return (
       <ul data-slot="field-error-list">
-        {uniqueErrors.map(
-          (error, index) =>
-            error?.message && <li key={index}>{error.message}</li>
-        )}
+        {uniqueErrors.map((error, index) => error?.message && <li key={index}>{error.message}</li>)}
       </ul>
-    )
-  }, [children, errors])
+    );
+  }, [children, errors]);
 
   if (!content) {
-    return null
+    return null;
   }
 
   return (
-    <div
-      role="alert"
-      data-slot="field-error"
-      className={className}
-      {...props}
-    >
+    <div role="alert" data-slot="field-error" className={className} {...props}>
       {content}
     </div>
-  )
+  );
 }
 
 export {
-  Field, FieldContent, FieldDescription,
+  Field,
+  FieldContent,
+  FieldDescription,
   FieldError,
-  FieldGroup, FieldLabel, FieldLegend,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
   FieldSeparator,
-  FieldSet, FieldTitle
-}
+  FieldSet,
+  FieldTitle
+};
+

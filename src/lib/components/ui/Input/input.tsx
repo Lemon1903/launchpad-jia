@@ -7,7 +7,7 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
     <input
       type={type}
       data-slot="input"
-      className={className ? `input ${className}` : "input"}
+      className={className ? `lp-input ${className}` : "lp-input"}
       {...props}
     />
   )

@@ -1,0 +1,54 @@
+/* Textarea component SCSS */
+
+:where([data-slot="textarea"]) {
+  display: flex;
+  width: 100%;
+  max-height: 11.25rem;
+  field-sizing: content;
+  border-radius: 0.5rem;
+  border: 1px solid var(--input, #cad1d7);
+  background-color: transparent;
+  padding: 0.625rem 0.875rem;
+  font-size: 1rem;
+  filter: drop-shadow(0 1px 2px 0 #0a0d120d);
+  transition-property: color, box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  outline: none;
+
+  /* Placeholder */
+  &::placeholder {
+    color: var(--muted-foreground, #717680);
+  }
+
+  /* Focus ring */
+  &:focus-visible {
+    border-color: var(--ring, #5e39d6);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring, #5e39d6) 20%, transparent);
+  }
+
+  /* Invalid state */
+  &[aria-invalid="true"] {
+    border-color: #f04438;
+
+    &:focus-visible {
+      box-shadow: 0 0 0 3px color-mix(in srgb, #f04438 20%, transparent);
+    }
+  }
+
+  /* Disabled state */
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* Dark mode background */
+  @media (prefers-color-scheme: dark) {
+    background-color: color-mix(in srgb, var(--input) 30%, transparent);
+  }
+
+  /* Responsive font size */
+  @media (min-width: 768px) {
+    font-size: 0.875rem; /* md:text-sm */
+  }
+}

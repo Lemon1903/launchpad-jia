@@ -1,6 +1,6 @@
 "use client";
 
-// import CareerFormOld from "@/lib/components/CareerComponents/CareerForm";
+// import CareerForm from "@/lib/components/CareerComponents/CareerForm";
 import CareerForm from "@/lib/components/CareerComponents/new/CareerForm";
 import HeaderBar from "@/lib/PageComponent/HeaderBar";
 
@@ -11,7 +11,7 @@ export default function NewCareerPage() {
         <div className="container-fluid mt--7" style={{ paddingTop: "6rem" }}>
           <div className="row">
             <CareerForm />
-            {/* <CareerFormOld formType="add" /> */}
+            {/* <CareerForm formType="add" /> */}
           </div>
         </div>
       </>

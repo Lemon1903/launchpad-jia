@@ -1,0 +1,16 @@
+.checkbox-renderer {
+  display: grid;
+  gap: 0.75rem;
+
+  &__option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__add-option {
+    border-radius: 0.5rem !important;
+    justify-self: flex-start;
+    margin-inline: 1rem;
+  }
+}

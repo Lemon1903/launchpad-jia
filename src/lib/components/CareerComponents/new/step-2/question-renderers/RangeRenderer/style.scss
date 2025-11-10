@@ -1,0 +1,10 @@
+.range-renderer {
+  &__content {
+    display: flex;
+    gap: 1rem;
+  }
+
+  &__separator {
+    margin-top: 0.75rem;
+  }
+}
