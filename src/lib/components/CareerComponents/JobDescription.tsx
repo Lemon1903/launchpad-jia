@@ -278,7 +278,7 @@ export default function JobDescription({ formData, setFormData, editModal, isEdi
                     </div>
                     <CareerLink career={formData} />
                     {/* Card for direct interview link */}
-                    <DirectInterviewLinkV2 career={formData} setFormData={setFormData} />
+                    <DirectInterviewLinkV2 career={formData} />
                     {isEditing && 
                     <div style={{ display: "flex", justifyContent: "center", gap: 16, alignItems: "center", marginBottom: "16px", width: "100%" }}>
                          <button className="button-primary" style={{ width: "50%" }} onClick={handleCancelEdit}>Cancel</button>
