@@ -1,4 +1,23 @@
+import { aiQuestions } from "@/lib/config/career/aiQuestions";
 import { CareerFormValues } from "@/lib/schemas/careerFormSchema";
+
+export const defaultCareerFormValues: CareerFormValues = {
+  jobTitle: "",
+  description: "",
+  employmentType: "Full-Time",
+  workSetup: "",
+  country: "Philippines",
+  province: "",
+  location: "",
+  salaryNegotiable: false,
+  minimumSalary: null,
+  maximumSalary: null,
+  cvScreeningSetting: "Good Fit and Above",
+  preScreeningQuestions: [],
+  aiScreeningSetting: "Good Fit and Above",
+  requireVideo: false,
+  questions: aiQuestions,
+};
 
 export const sampleFSSeniorDeveloper: CareerFormValues = {
   // Career Information
@@ -62,7 +81,7 @@ export const sampleFSSeniorDeveloper: CareerFormValues = {
 
   // AI Interview
   aiScreeningSetting: "No Automatic Promotion",
-  videoRequired: false,
+  requireVideo: false,
   aiSecretPrompt: undefined,
   questions: [
     {
@@ -213,7 +232,7 @@ export const sampleFSJuniorDeveloper: CareerFormValues = {
 
   // AI Interview with secret prompt
   aiScreeningSetting: "Good Fit and Above",
-  videoRequired: true,
+  requireVideo: true,
   aiSecretPrompt:
     "Look for candidates with strong React/Next.js fundamentals and practical full-stack experience. Assess their ability to explain technical concepts clearly and their problem-solving approach. Value candidates with portfolio projects demonstrating real-world application development.",
   questions: [

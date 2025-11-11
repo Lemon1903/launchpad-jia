@@ -1,3 +1,5 @@
+"use client";
+
 import { Controller, useFormContext } from "react-hook-form";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/lib/components/ui/Card/card";
@@ -68,7 +70,7 @@ export default function AIInterviewSettingsCard() {
           <FieldSeparator />
           {/* Require Viedeo */}
           <Controller
-            name="videoRequired"
+            name="requireVideo"
             control={control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>

@@ -23,7 +23,7 @@ import {
 } from "@/lib/components/ui/Select/select";
 import { Switch } from "@/lib/components/ui/Switch/switch";
 import { CareerFormValues } from "@/lib/schemas/careerFormSchema";
-import "@/lib/styles/forms/career-step-one.scss";
+import "@/lib/styles/career/career-step-one.scss";
 import { CITIES, EMPLOYMENT_TYPES, PROVINCES, WORK_SETUPS } from "@/lib/utils/careerConstants";
 
 export default function CareerInformationCard() {
@@ -237,7 +237,12 @@ export default function CareerInformationCard() {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="minimum-salary">Minimum Salary</FieldLabel>
-                    <SalaryInput id="minimum-salary" aria-invalid={fieldState.invalid} {...field} />
+                    <SalaryInput
+                      {...field}
+                      id="minimum-salary"
+                      aria-invalid={fieldState.invalid}
+                      value={field.value || ""}
+                    />
                     {fieldState.error && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
@@ -249,7 +254,12 @@ export default function CareerInformationCard() {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="maximum-salary">Maximum Salary</FieldLabel>
-                    <SalaryInput id="maximum-salary" aria-invalid={fieldState.invalid} {...field} />
+                    <SalaryInput
+                      {...field}
+                      id="maximum-salary"
+                      aria-invalid={fieldState.invalid}
+                      value={field.value || ""}
+                    />
                     {fieldState.error && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}

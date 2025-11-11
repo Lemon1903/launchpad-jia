@@ -64,24 +64,26 @@
 
   /* Destructive variant */
   &[data-variant="destructive"] {
-    border: 1px solid var(--destructive, #f04438);
-    background-color: #ffffff;
-    color: #f04438;
+    border: 1px solid transparent;
+    background-color: #fef3f2;
+    color: #b32318;
+    box-shadow: 0 1px 2px 0 #0a0d120d;
 
     &:hover:not(:disabled) {
-      background-color: color-mix(in srgb, var(--destructive, #f04438) 90%, transparent);
-      color: #ffffff;
+      background-color: color-mix(in srgb, #b32318 90%, transparent);
+      color: #fef3f2;
+      box-shadow: 0 3px 5px 0 rgb(0 0 0 / 0.05);
     }
 
     &:focus-visible {
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive, #f04438) 20%, transparent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, #fef3f2 20%, transparent);
     }
 
     // @media (prefers-color-scheme: dark) {
-    //   background-color: color-mix(in srgb, var(--destructive, #f04438) 60%, transparent);
+    //   background-color: color-mix(in srgb, #FEF3F2 60%, transparent);
 
     //   &:focus-visible {
-    //     box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive, #f04438) 40%, transparent);
+    //     box-shadow: 0 0 0 3px color-mix(in srgb, #FEF3F2 40%, transparent);
     //   }
     // }
   }

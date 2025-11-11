@@ -23,6 +23,6 @@ export const questionRendererRegistry: QuestionRenderer = {
   },
   range: {
     renderer: RangeRenderer,
-    defaultValue: { minimumSalary: 0, maximumSalary: 0 },
+    defaultValue: { minimumSalary: null, maximumSalary: null },
   },
 };

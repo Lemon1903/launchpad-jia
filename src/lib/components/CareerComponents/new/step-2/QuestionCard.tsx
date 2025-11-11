@@ -14,7 +14,7 @@ import { questionRendererRegistry } from "@/lib/config/career/questionRendererRe
 import { DragHandle } from "@/lib/icons";
 import { CareerFormValues } from "@/lib/schemas/careerFormSchema";
 import { PreScreeningQuestion } from "@/lib/schemas/cvScreeningSchema";
-import "@/lib/styles/forms/career-step-two.scss";
+import "@/lib/styles/career/career-step-two.scss";
 import { QuestionType } from "@/lib/utils/careerConstants";
 
 interface QuestionCardProps {
@@ -140,7 +140,12 @@ export default function QuestionCard({
             control={control}
             question={watchedQuestion}
           />
-          <Button variant="destructive" size="sm" onClick={() => onDeleteQuestion?.(questionIndex)}>
+          <Button
+            variant="destructive"
+            size="sm"
+            className="career-step-two__question-card__delete-button"
+            onClick={() => onDeleteQuestion?.(questionIndex)}
+          >
             <i className="la la-trash"></i>
             Delete Question
           </Button>

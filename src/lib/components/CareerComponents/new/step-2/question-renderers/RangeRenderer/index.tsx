@@ -12,23 +12,33 @@ export default function RangeRenderer({ control, questionIndex }: QuestionRender
     <div className="range-renderer">
       <div className="range-renderer__content">
         <Controller
-          name={`preScreeningQuestions.${questionIndex}.salaryMin`}
+          name={`preScreeningQuestions.${questionIndex}.minimumSalary`}
           control={control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="minimum-salary">Minimum</FieldLabel>
-              <SalaryInput id="minimum-salary" aria-invalid={fieldState.invalid} {...field} />
+              <SalaryInput
+                {...field}
+                id="minimum-salary"
+                aria-invalid={fieldState.invalid}
+                value={field.value || ""}
+              />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
         <Controller
-          name={`preScreeningQuestions.${questionIndex}.salaryMax`}
+          name={`preScreeningQuestions.${questionIndex}.maximumSalary`}
           control={control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="maximum-salary">Maximum</FieldLabel>
-              <SalaryInput id="maximum-salary" aria-invalid={fieldState.invalid} {...field} />
+              <SalaryInput
+                {...field}
+                id="maximum-salary"
+                aria-invalid={fieldState.invalid}
+                value={field.value || ""}
+              />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

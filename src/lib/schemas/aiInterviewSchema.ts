@@ -25,7 +25,7 @@ export const aiInterviewSchema = z.object({
   aiScreeningSetting: z.enum(SCREENING_SETTING_VALUES, {
     error: "Select a valid CV screening setting.",
   }),
-  videoRequired: z.boolean().default(false),
+  requireVideo: z.boolean().default(false),
   aiSecretPrompt: z
     .string()
     .min(10, "AI secret prompt must be at least 10 characters long.")

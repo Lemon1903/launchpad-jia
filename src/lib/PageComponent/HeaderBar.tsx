@@ -1,9 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import AvatarImage from "../components/AvatarImage/AvatarImage";
 import { useAppContext } from "../context/AppContext";
-import { useEffect, useState } from "react";
 import useDateTimer from "../hooks/useDateTimerHook";
 import { clearUserSession } from "../Utils";
 
@@ -129,7 +129,7 @@ export default function HeaderBar(props: { activeLink: string, currentPage: stri
                         //   window.location.href = "/login";
                         // }
 
-                         window.location.href = "/";
+                         window.location.href = "/login";
                       }}
                       >
                         <i className="la la-sign-out"></i> Log out

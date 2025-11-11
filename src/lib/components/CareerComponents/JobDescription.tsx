@@ -1,12 +1,12 @@
 "use client";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import InterviewQuestionGeneratorV2 from "./InterviewQuestionGeneratorV2";
 import { useAppContext } from "../../context/AppContext";
-import DirectInterviewLinkV2 from "./DirectInterviewLinkV2";
 import CareerForm from "./CareerForm";
 import CareerLink from "./CareerLink";
+import DirectInterviewLinkV2 from "./DirectInterviewLinkV2";
+import InterviewQuestionGeneratorV2 from "./InterviewQuestionGeneratorV2";
 
 export default function JobDescription({ formData, setFormData, editModal, isEditing, setIsEditing, handleCancelEdit }: { formData: any, setFormData: (formData: any) => void, editModal: boolean, isEditing: boolean, setIsEditing: (isEditing: boolean) => void, handleCancelEdit: () => void }) {
     const { user } = useAppContext();
@@ -278,7 +278,7 @@ export default function JobDescription({ formData, setFormData, editModal, isEdi
                     </div>
                     <CareerLink career={formData} />
                     {/* Card for direct interview link */}
-                    <DirectInterviewLinkV2 formData={formData} setFormData={setFormData} />
+                    <DirectInterviewLinkV2 career={formData} setFormData={setFormData} />
                     {isEditing && 
                     <div style={{ display: "flex", justifyContent: "center", gap: 16, alignItems: "center", marginBottom: "16px", width: "100%" }}>
                          <button className="button-primary" style={{ width: "50%" }} onClick={handleCancelEdit}>Cancel</button>

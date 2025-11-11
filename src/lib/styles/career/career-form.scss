@@ -36,4 +36,8 @@
     flex: 1 1 auto;
     min-width: 0; /* avoid overflow on long content */
   }
+
+  &__muted {
+    color: #717680;
+  }
 }

@@ -1,7 +1,7 @@
 import { Button } from "@/lib/components/ui/Button/button";
 import { suggestedQuestions } from "@/lib/config/career/suggestedQuestions";
 import { PreScreeningQuestion } from "@/lib/schemas/cvScreeningSchema";
-import "@/lib/styles/forms/career-step-two.scss";
+import "@/lib/styles/career/career-step-two.scss";
 
 interface SuggestedQuestionsProps {
   isSuggestedQuestionAdded: (question: PreScreeningQuestion) => boolean;

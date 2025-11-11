@@ -26,16 +26,16 @@ export const steps: Step[] = [
   {
     label: "Career Details & Team Access",
     fields: [
-      "title",
+      "jobTitle",
       "description",
       "employmentType",
-      "arrangement",
+      "workSetup",
       "country",
       "province",
-      "city",
+      "location",
       "salaryNegotiable",
-      "salaryMin",
-      "salaryMax",
+      "minimumSalary",
+      "maximumSalary",
     ],
     component: CareerStepOneForm,
     tips: [
@@ -70,7 +70,7 @@ export const steps: Step[] = [
   },
   {
     label: "AI Interview Setup",
-    fields: ["aiScreeningSetting", "aiSecretPrompt", "videoRequired", "questions"],
+    fields: ["aiScreeningSetting", "aiSecretPrompt", "requireVideo", "questions"],
     component: CareerStepThreeForm,
     tips: [
       {

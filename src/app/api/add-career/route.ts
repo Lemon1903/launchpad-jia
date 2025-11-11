@@ -1,8 +1,15 @@
-import { NextResponse } from "next/server";
 import connectMongoDB from "@/lib/mongoDB/mongoDB";
 import { guid } from "@/lib/Utils";
 import { ObjectId } from "mongodb";
+import { NextResponse } from "next/server";
 
+/**
+ * @deprecated Use POST /api/careers instead for RESTful API
+ * This endpoint will be removed in future versions
+ * 
+ * Legacy endpoint for adding careers
+ * Non-RESTful: Uses POST for all operations
+ */
 export async function POST(request: Request) {
   try {
     const {

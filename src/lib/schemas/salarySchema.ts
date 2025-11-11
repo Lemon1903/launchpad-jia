@@ -5,38 +5,50 @@ const stripCommas = (v: unknown) => (typeof v === "string" ? v.replace(/,/g, "")
 
 export const salarySchema = z
   .object({
-    minimumSalary: z.preprocess(
-      stripCommas,
-      z.coerce.number().min(1, "Minimum salary must be greater than or equal to 1"),
-    ),
-    maximumSalary: z.preprocess(
-      stripCommas,
-      z.coerce.number().min(1, "Maximum salary must be greater than or equal to 1"),
-    ),
+    minimumSalary: z
+      .preprocess(
+        stripCommas,
+        z.coerce.number().min(1, "Minimum salary must be greater than or equal to 1"),
+      )
+      .nullable(),
+    maximumSalary: z
+      .preprocess(
+        stripCommas,
+        z.coerce.number().min(1, "Maximum salary must be greater than or equal to 1"),
+      )
+      .nullable(),
   })
   .superRefine((data, ctx) => {
     // Ensure numbers are valid (coerce can produce NaN)
-    if (Number.isNaN(data.minimumSalary)) {
+    if (!data.minimumSalary || !data.maximumSalary) {
       ctx.addIssue({
         path: ["minimumSalary"],
         code: "custom",
         message: "Minimum salary is required.",
       });
-    }
-
-    if (Number.isNaN(data.maximumSalary)) {
       ctx.addIssue({
         path: ["maximumSalary"],
         code: "custom",
         message: "Maximum salary is required.",
       });
+      return;
     }
 
-    if (
-      !Number.isNaN(data.minimumSalary) &&
-      !Number.isNaN(data.maximumSalary) &&
-      data.maximumSalary <= data.minimumSalary
-    ) {
+    if (Number.isNaN(data.minimumSalary) || Number.isNaN(data.maximumSalary)) {
+      ctx.addIssue({
+        path: ["minimumSalary"],
+        code: "custom",
+        message: "Minimum salary must be a number.",
+      });
+      ctx.addIssue({
+        path: ["maximumSalary"],
+        code: "custom",
+        message: "Maximum salary must be a number.",
+      });
+      return;
+    }
+
+    if (data.maximumSalary <= data.minimumSalary) {
       ctx.addIssue({
         path: ["maximumSalary"],
         code: "custom",

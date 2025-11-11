@@ -22,7 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/lib/components/ui/Ca
 import { Textarea } from "@/lib/components/ui/Textarea/textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/lib/components/ui/Tooltip/tooltip";
 import { GlimmerGradient } from "@/lib/icons";
-import "@/lib/styles/forms/career-step-two.scss";
+import "@/lib/styles/career/career-step-two.scss";
 
 export default function CVScreeningCard() {
   const { control } = useFormContext<CareerFormValues>();

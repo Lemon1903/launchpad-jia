@@ -1,6 +1,6 @@
 import { steps } from "@/lib/config/career/steps";
 import { StepCircle, StepCompleted, StepError } from "@/lib/icons";
-import "@/lib/styles/forms/career-steps.scss";
+import "@/lib/styles/career/career-steps.scss";
 
 interface CareerStepsProps {
   currentStep: number;

@@ -8,7 +8,7 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import { Separator } from "@/lib/components/ui/Separator/separator";
 import { CareerFormValues } from "@/lib/schemas/careerFormSchema";
 import { PreScreeningQuestion } from "@/lib/schemas/cvScreeningSchema";
-import "@/lib/styles/forms/career-step-two.scss";
+import "@/lib/styles/career/career-step-two.scss";
 
 import QuestionCard from "@/lib/components/CareerComponents/new/step-2/QuestionCard";
 import SuggestedQuestions from "@/lib/components/CareerComponents/new/step-2/SuggestedQuestions";
