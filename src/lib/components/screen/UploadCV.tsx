@@ -3,13 +3,14 @@
 
 "use client";
 
-import styles from "@/lib/styles/screen/uploadCV.module.scss";
+import PreScreeningForm from "@/lib/components/ApplicantComponents/PreScreeningForm";
 import { contextProvider } from "@/lib/context/Context";
+import styles from "@/lib/styles/screen/uploadCV.module.scss";
 import { CORE_API_URL } from "@/lib/Utils";
 import axios from "axios";
-import Markdown from "react-markdown";
-import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import Markdown from "react-markdown";
 
 export default function () {
   const pathname = usePathname();
@@ -25,6 +26,8 @@ export default function () {
   const [interviewData, setInterviewData] = useState(null);
   const [screeningResult, setScreeningResult] = useState(null);
   const [userCV, setUserCV] = useState(null);
+  const [career, setCareer] = useState(null);
+  const [preScreeningAnswers, setPreScreeningAnswers] = useState(null);
   const cvSections = [
     "Introduction",
     "Current Position",
@@ -36,7 +39,7 @@ export default function () {
     "Certifications",
     "Awards",
   ];
-  const step = ["Submit CV", "CV Screening", "Review Next Steps"];
+  const step = ["Submit CV", "Pre-Screening Questions", "Review"];
 
   function checkFile(file) {
     if (file.length > 1) {
@@ -154,9 +157,15 @@ export default function () {
   useEffect(() => {
     const interviewData = localStorage.getItem("interviewData");
     const storedCV = localStorage.getItem("userCV");
+    const storedSelectedCareer = sessionStorage.getItem("selectedCareer");
 
     if (storedCV && storedCV != "null") {
       setDigitalCV(storedCV);
+    }
+
+    if (storedSelectedCareer) {
+      const parsedCareer = JSON.parse(storedSelectedCareer);
+      setCareer(parsedCareer);
     }
 
     if (interviewData) {
@@ -186,7 +195,7 @@ export default function () {
     sessionStorage.setItem("hasChanges", JSON.stringify(hasChanges));
   }, [hasChanges]);
 
-  async function handleCVScreen() {
+  async function handleSubmitCV() {
     if (editingCV != null) {
       alert("Please save the changes first.");
       return false;
@@ -217,8 +226,6 @@ export default function () {
         return false;
       }
     }
-
-    setCurrentStep(step[1]);
 
     if (hasChanges) {
       const formattedUserCV = cvSections.map((section) => ({
@@ -253,10 +260,28 @@ export default function () {
         })
         .catch((err) => {
           alert("Error saving CV. Please try again.");
-          setCurrentStep(step[0]);
           console.log(err);
+          return;
         });
     }
+
+    // Check if career has pre-screening questions
+    if (career?.preScreeningQuestions && career.preScreeningQuestions.length > 0) {
+      // Move to pre-screening questions step
+      setCurrentStep(step[1]);
+    } else {
+      // Skip pre-screening and go directly to CV screening
+      await handleCVScreen();
+    }
+  }
+
+  function handlePreScreeningSubmit(answers: Record<string, any>) {
+    setPreScreeningAnswers(answers);
+    handleCVScreen(answers);
+  }
+
+  async function handleCVScreen(preScreeningAnswers?: Record<string, any>) {
+    setCurrentStep(step[1]);
 
     await axios({
       url: "/api/whitecloak/screen-cv",
@@ -264,6 +289,8 @@ export default function () {
       data: {
         interviewID: interviewData.interviewID,
         userEmail: interviewData.email,
+        preScreeningAnswers: preScreeningAnswers || null,
+        cvSecretPrompt: career?.cvSecretPrompt || null,
       },
     })
       .then(async (res) => {
@@ -505,7 +532,7 @@ export default function () {
                         </div>
                       ))}
 
-                      <button onClick={handleCVScreen}>Submit CV</button>
+                      <button onClick={handleSubmitCV}>Submit CV</button>
                     </div>
                   </>
                 )}
@@ -551,22 +578,40 @@ export default function () {
             ))}
 
           {currentStep == step[1] && (
-            <div className={styles.cvScreeningContainer}>
-              <img alt="cv-screening" src="/gifs/cv-screening.gif" />
-              <span className={styles.title}>Sit tight!</span>
+            <>
+              {career?.preScreeningQuestions && career.preScreeningQuestions.length > 0 ? (
+                <div className={styles.preScreeningContainer}>
+                  <div className={styles.preScreeningHeader}>
+                    <span className={styles.title}>Pre-Screening Questions</span>
+                    <span className={styles.description}>
+                      Please answer the following questions to help us better understand your qualifications.
+                    </span>
+                  </div>
+                  <PreScreeningForm
+                    questions={career.preScreeningQuestions}
+                    onSubmit={handlePreScreeningSubmit}
+                    isSubmitting={false}
+                  />
+                </div>
+              ) : (
+                <div className={styles.cvScreeningContainer}>
+                  <img alt="cv-screening" src="/gifs/cv-screening.gif" />
+                  <span className={styles.title}>Sit tight!</span>
 
-              <span className={`mobileView ${styles.description}`}>
-                Our smart reviewer is checking your qualifications. We'll let
-                you know what's next in just a moment.
-              </span>
+                  <span className={`mobileView ${styles.description}`}>
+                    Our smart reviewer is checking your qualifications. We'll let
+                    you know what's next in just a moment.
+                  </span>
 
-              <span className={`webView ${styles.description}`}>
-                Our smart reviewer is checking your qualifications.
-              </span>
-              <span className={`webView ${styles.description}`}>
-                We'll let you know what's next in just a moment.
-              </span>
-            </div>
+                  <span className={`webView ${styles.description}`}>
+                    Our smart reviewer is checking your qualifications.
+                  </span>
+                  <span className={`webView ${styles.description}`}>
+                    We'll let you know what's next in just a moment.
+                  </span>
+                </div>
+              )}
+            </>
           )}
 
           {currentStep == step[2] && (

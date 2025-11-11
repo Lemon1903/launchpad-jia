@@ -1,10 +1,10 @@
+import styles from "@/lib/styles/commonV2/modal.module.scss";
 import axios from "axios";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { toast } from "react-toastify";
-import { errorToast, loadingToast, successToast } from "../Utils";
 import Swal from "sweetalert2";
-import styles from "@/lib/styles/commonV2/modal.module.scss";
+import { errorToast, loadingToast, successToast } from "../Utils";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -76,8 +76,8 @@ export async function signInWithGoogle(type) {
       const host = window.location.host;
 
       if (
-        (host.includes("localhost") || host.includes("hirejia.ai")) &&
-        res.data.role == "applicant"
+        // (host.includes("localhost") || host.includes("hirejia.ai")) &&
+        (host.includes("hirejia.ai")) && res.data.role == "applicant"
       ) {
         Swal.fire({
           title: "No Account Found",
@@ -214,9 +214,8 @@ export function signInWithMicrosoft() {
         .post("/api/auth", {
           name: profile.email.split("@")[0],
           email: profile.email,
-          image: `https://api.dicebear.com/8.x/shapes/svg?seed=${
-            profile.email.split("@")[0]
-          }`,
+          image: `https://api.dicebear.com/8.x/shapes/svg?seed=${profile.email.split("@")[0]
+            }`,
         })
         .then((res) => {
           if (res.data.error) {

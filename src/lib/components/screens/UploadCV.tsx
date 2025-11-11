@@ -2,15 +2,17 @@
 
 "use client";
 
+import axios from "axios";
+import { useEffect, useRef, useState } from "react";
+import Markdown from "react-markdown";
+
+import PreScreeningForm from "@/lib/components/ApplicantComponents/PreScreeningForm";
 import Loader from "@/lib/components/commonV2/Loader";
-import styles from "@/lib/styles/screens/uploadCV.module.scss";
 import { useAppContext } from "@/lib/context/ContextV2";
+import styles from "@/lib/styles/screens/uploadCV.module.scss";
+import { CORE_API_URL } from "@/lib/Utils";
 import { assetConstants, pathConstants } from "@/lib/utils/constantsV2";
 import { checkFile } from "@/lib/utils/helpersV2";
-import { CORE_API_URL } from "@/lib/Utils";
-import axios from "axios";
-import Markdown from "react-markdown";
-import { useEffect, useRef, useState } from "react";
 
 export default function () {
   const fileInputRef = useRef(null);
@@ -25,6 +27,9 @@ export default function () {
   const [interview, setInterview] = useState(null);
   const [screeningResult, setScreeningResult] = useState(null);
   const [userCV, setUserCV] = useState(null);
+  const [career, setCareer] = useState(null);
+  const [preScreeningAnswers, setPreScreeningAnswers] = useState(null);
+  const [isScreeningInProgress, setIsScreeningInProgress] = useState(false);
   const cvSections = [
     "Introduction",
     "Current Position",
@@ -36,7 +41,7 @@ export default function () {
     "Certifications",
     "Awards",
   ];
-  const step = ["Submit CV", "CV Screening", "Review Next Steps"];
+  const step = ["Submit CV", "Pre-Screening Questions", "Review"];
   const stepStatus = ["Completed", "Pending", "In Progress"];
 
   function handleDragOver(e) {
@@ -155,6 +160,7 @@ export default function () {
 
     if (storedSelectedCareer) {
       const parseStoredSelectedCareer = JSON.parse(storedSelectedCareer);
+      setCareer(parseStoredSelectedCareer);
       fetchInterview(parseStoredSelectedCareer.id);
     } else {
       alert("No application is currently being managed.");
@@ -196,15 +202,13 @@ export default function () {
       });
   }
 
-  function handleCVScreen() {
+  async function handleSubmitCV() {
     if (editingCV != null) {
       alert("Please save the changes first.");
       return false;
     }
 
-    const allEmpty = Object.values(userCV).every(
-      (value: any) => value.trim() == ""
-    );
+    const allEmpty = Object.values(userCV).every((value: any) => value.trim() == "");
 
     if (allEmpty) {
       alert("No details to be save.");
@@ -220,15 +224,10 @@ export default function () {
       parsedDigitalCV = JSON.parse(digitalCV);
 
       if (parsedDigitalCV.errorRemarks) {
-        alert(
-          "Please fix the errors in the CV first.\n\n" +
-            parsedDigitalCV.errorRemarks
-        );
+        alert("Please fix the errors in the CV first.\n\n" + parsedDigitalCV.errorRemarks);
         return false;
       }
     }
-
-    setCurrentStep(step[1]);
 
     if (hasChanges) {
       const formattedUserCV = cvSections.map((section) => ({
@@ -253,32 +252,48 @@ export default function () {
         };
       }
 
-      axios({
+      await axios({
         method: "POST",
         url: `/api/whitecloak/save-cv`,
         data,
       })
         .then(() => {
-          localStorage.setItem(
-            "userCV",
-            JSON.stringify({ ...data, ...data.cvData })
-          );
+          setHasChanges(false);
+          localStorage.setItem("userCV", JSON.stringify({ ...data, ...data.cvData }));
         })
         .catch((err) => {
           alert("Error saving CV. Please try again.");
-          setCurrentStep(step[0]);
           console.log(err);
+          return;
         });
     }
 
-    setHasChanges(true);
+    // Check if career has pre-screening questions
+    if (career?.preScreeningQuestions && career.preScreeningQuestions.length > 0) {
+      // Move to pre-screening questions step
+      setCurrentStep(step[1]);
+    } else {
+      // Skip pre-screening and go directly to CV screening
+      await handleCVScreen();
+    }
+  }
 
-    axios({
+  function handlePreScreeningSubmit(answers: Record<string, any>) {
+    setPreScreeningAnswers(answers);
+    handleCVScreen(answers);
+  }
+
+  async function handleCVScreen(preScreeningAnswers?: Record<string, any>) {
+    setIsScreeningInProgress(true);
+
+    await axios({
       url: "/api/whitecloak/screen-cv",
       method: "POST",
       data: {
         interviewID: interview.interviewID,
         userEmail: user.email,
+        preScreeningAnswers: preScreeningAnswers || null,
+        cvSecretPrompt: career?.cvSecretPrompt || null,
       },
     })
       .then((res) => {
@@ -299,6 +314,7 @@ export default function () {
       })
       .finally(() => {
         setHasChanges(false);
+        setIsScreeningInProgress(false);
       });
   }
 
@@ -328,8 +344,7 @@ export default function () {
             const formattedCV = {};
 
             cvSections.forEach((section, index) => {
-              formattedCV[section] =
-                parsedUserCV.digitalCV[index].content.trim();
+              formattedCV[section] = parsedUserCV.digitalCV[index].content.trim();
             });
 
             setDigitalCV(result);
@@ -364,9 +379,7 @@ export default function () {
               <span className={styles.tag}>You're applying for</span>
               <span className={styles.title}>{interview.jobTitle}</span>
               {interview.organization && interview.organization.name && (
-                <span className={styles.name}>
-                  {interview.organization.name}
-                </span>
+                <span className={styles.name}>{interview.organization.name}</span>
               )}
               <span className={styles.description} onClick={handleModal}>
                 View job description
@@ -380,22 +393,10 @@ export default function () {
                 <div className={styles.stepBar} key={index}>
                   <img
                     alt=""
-                    src={
-                      assetConstants[
-                        processState(index, true)
-                          .toLowerCase()
-                          .replace(" ", "_")
-                      ]
-                    }
+                    src={assetConstants[processState(index, true).toLowerCase().replace(" ", "_")]}
                   />
                   {index < step.length - 1 && (
-                    <hr
-                      className={
-                        styles[
-                          processState(index).toLowerCase().replace(" ", "_")
-                        ]
-                      }
-                    />
+                    <hr className={styles[processState(index).toLowerCase().replace(" ", "_")]} />
                   )}
                 </div>
               ))}
@@ -405,9 +406,7 @@ export default function () {
               {step.map((item, index) => (
                 <span
                   className={`${styles.stepDetails} ${
-                    styles[
-                      processState(index, true).toLowerCase().replace(" ", "_")
-                    ]
+                    styles[processState(index, true).toLowerCase().replace(" ", "_")]
                   }`}
                   key={index}
                 >
@@ -429,9 +428,8 @@ export default function () {
                     <img alt="" src={assetConstants.uploadV2} />
                     <button onClick={handleUploadCV}>Upload CV</button>
                     <span>
-                      Choose or drag and drop a file here. Our AI tools will
-                      automatically pre-fill your CV and also check how well it
-                      matches the role.
+                      Choose or drag and drop a file here. Our AI tools will automatically pre-fill
+                      your CV and also check how well it matches the role.
                     </span>
                   </div>
                   <input
@@ -452,8 +450,7 @@ export default function () {
                       Review Current CV
                     </button>
                     <span>
-                      Already uploaded a CV? Take a moment to review your
-                      details before we proceed.
+                      Already uploaded a CV? Take a moment to review your details before we proceed.
                     </span>
                   </div>
                 </div>
@@ -499,9 +496,7 @@ export default function () {
                         <div className={styles.editIcon}>
                           <img
                             alt=""
-                            src={
-                              file ? assetConstants.xV2 : assetConstants.save
-                            }
+                            src={file ? assetConstants.xV2 : assetConstants.save}
                             onClick={file ? handleRemoveFile : handleUploadCV}
                             onContextMenu={(e) => e.preventDefault()}
                           />
@@ -524,8 +519,8 @@ export default function () {
                         ) : (
                           <span className={styles.fileTitle}>
                             <img alt="" src={assetConstants.fileV2} />
-                            You can also upload your CV and let our AI
-                            automatically fill in your profile information.
+                            You can also upload your CV and let our AI automatically fill in your
+                            profile information.
                           </span>
                         )}
                       </div>
@@ -541,16 +536,8 @@ export default function () {
                           <div className={styles.editIcon}>
                             <img
                               alt=""
-                              src={
-                                editingCV == section
-                                  ? assetConstants.save
-                                  : assetConstants.edit
-                              }
-                              onClick={() =>
-                                handleEditCV(
-                                  editingCV == section ? null : section
-                                )
-                              }
+                              src={editingCV == section ? assetConstants.save : assetConstants.edit}
+                              onClick={() => handleEditCV(editingCV == section ? null : section)}
                               onContextMenu={(e) => e.preventDefault()}
                             />
                           </div>
@@ -561,12 +548,9 @@ export default function () {
                             <textarea
                               id={section}
                               placeholder="Upload your CV to auto-fill this section."
-                              value={
-                                userCV && userCV[section] ? userCV[section] : ""
-                              }
+                              value={userCV && userCV[section] ? userCV[section] : ""}
                               onBlur={(e) => {
-                                e.target.placeholder =
-                                  "Upload your CV to auto-fill this section.";
+                                e.target.placeholder = "Upload your CV to auto-fill this section.";
                               }}
                               onChange={(e) => {
                                 setUserCV({
@@ -582,17 +566,13 @@ export default function () {
                           ) : (
                             <span
                               className={`${styles.sectionDetails} ${
-                                userCV &&
-                                userCV[section] &&
-                                userCV[section].trim()
+                                userCV && userCV[section] && userCV[section].trim()
                                   ? styles.withDetails
                                   : ""
                               }`}
                             >
                               <Markdown>
-                                {userCV &&
-                                userCV[section] &&
-                                userCV[section].trim()
+                                {userCV && userCV[section] && userCV[section].trim()
                                   ? userCV[section].trim()
                                   : "Upload your CV to auto-fill this section."}
                               </Markdown>
@@ -602,23 +582,42 @@ export default function () {
                       </div>
                     </div>
                   ))}
-                  <button onClick={handleCVScreen}>Submit CV</button>
+                  <button onClick={handleSubmitCV}>Submit CV</button>
                 </div>
               )}
             </>
           )}
 
           {currentStep == step[1] && (
-            <div className={styles.cvScreeningContainer}>
-              <img alt="" src={assetConstants.loading} />
-              <span className={styles.title}>Sit tight!</span>
-              <span className={styles.description}>
-                Our smart reviewer is checking your qualifications.
-              </span>
-              <span className={styles.description}>
-                We'll let you know what's next in just a moment.
-              </span>
-            </div>
+            <>
+              {isScreeningInProgress ? (
+                <div className={styles.cvScreeningContainer}>
+                  <img alt="" src={assetConstants.loading} />
+                  <span className={styles.title}>Sit tight!</span>
+                  <span className={styles.description}>
+                    Our smart reviewer is checking your qualifications.
+                  </span>
+                  <span className={styles.description}>
+                    We'll let you know what's next in just a moment.
+                  </span>
+                </div>
+              ) : career?.preScreeningQuestions && career.preScreeningQuestions.length > 0 ? (
+                <>
+                  <div>
+                    <div className={styles.preScreeningTitle}>Quick Pre-screening</div>
+                    <span className={styles.preScreeningDescription}>
+                      Just a few short questions to help your recruiters assess you faster. Takes
+                      less than a minute.
+                    </span>
+                  </div>
+                  <PreScreeningForm
+                    questions={career.preScreeningQuestions}
+                    onSubmit={handlePreScreeningSubmit}
+                    isSubmitting={false}
+                  />
+                </>
+              ) : null}
+            </>
           )}
 
           {currentStep == step[2] && screeningResult && (
@@ -626,48 +625,34 @@ export default function () {
               {screeningResult.applicationStatus == "Dropped" ? (
                 <>
                   <img alt="" src={assetConstants.userRejected} />
-                  <span className={styles.title}>
-                    This role may not be the best match.
-                  </span>
+                  <span className={styles.title}>This role may not be the best match.</span>
                   <span className={styles.description}>
-                    Based on your CV, it looks like this position might not be
-                    the right fit at the moment.
+                    Based on your CV, it looks like this position might not be the right fit at the
+                    moment.
                   </span>
                   <br />
                   <span className={styles.description}>
-                    Review your screening results and see recommended next
-                    steps.
+                    Review your screening results and see recommended next steps.
                   </span>
                   <div className={styles.buttonContainer}>
-                    <button onClick={() => handleRedirection("dashboard")}>
-                      View Dashboard
-                    </button>
+                    <button onClick={() => handleRedirection("dashboard")}>View Dashboard</button>
                   </div>
                 </>
               ) : screeningResult.status == "For AI Interview" ? (
                 <>
                   <img alt="" src={assetConstants.checkV3} />
-                  <span className={styles.title}>
-                    Hooray! You’re a strong fit for this role.
-                  </span>
-                  <span className={styles.description}>
-                    Jia thinks you might be a great match.
-                  </span>
+                  <span className={styles.title}>Hooray! You’re a strong fit for this role.</span>
+                  <span className={styles.description}>Jia thinks you might be a great match.</span>
                   <br />
                   <span className={`${styles.description} ${styles.bold}`}>
                     Ready to take the next step?
                   </span>
-                  <span className={styles.description}>
-                    You may start your AI interview now.
-                  </span>
+                  <span className={styles.description}>You may start your AI interview now.</span>
                   <div className={styles.buttonContainer}>
                     <button onClick={() => handleRedirection("interview")}>
                       Start AI Interview
                     </button>
-                    <button
-                      className="secondaryBtn"
-                      onClick={() => handleRedirection("dashboard")}
-                    >
+                    <button className="secondaryBtn" onClick={() => handleRedirection("dashboard")}>
                       View Dashboard
                     </button>
                   </div>
@@ -682,9 +667,7 @@ export default function () {
                     We’ll be in touch soon with updates about your application.
                   </span>
                   <div className={styles.buttonContainer}>
-                    <button onClick={() => handleRedirection("dashboard")}>
-                      View Dashboard
-                    </button>
+                    <button onClick={() => handleRedirection("dashboard")}>View Dashboard</button>
                   </div>
                 </>
               )}

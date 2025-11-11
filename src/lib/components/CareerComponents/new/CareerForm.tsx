@@ -21,7 +21,7 @@ import { Career, CareerStatus } from "@/types";
 
 interface CareerFormProps {
   existingCareer?: Career;
-  step: number | null;
+  step?: number | null;
 }
 
 export default function CareerForm({ existingCareer, step }: CareerFormProps) {

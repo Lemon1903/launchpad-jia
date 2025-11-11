@@ -1,11 +1,11 @@
 // TODO (Vince) : For Checking
 
-import { NextResponse } from "next/server";
 import connectMongoDB from "@/lib/mongoDB/mongoDB";
+import { NextResponse } from "next/server";
 import OpenAI from "openai";
 
 export async function POST(request: Request) {
-  const { interviewID, userEmail } = await request.json();
+  const { interviewID, userEmail, preScreeningAnswers, cvSecretPrompt } = await request.json();
   const { db } = await connectMongoDB();
   const interviewData = await db.collection("interviews").findOne({
     interviewID,
@@ -30,24 +30,62 @@ export async function POST(request: Request) {
     });
   }
 
-  const cvScreeningPromptData = await db.collection("global-settings").findOne(
-    {
-      name: "global-settings",
-    },
-    {
-      projection: {
-        cv_screening_prompt: 1,
+  // Use career-specific prompt if provided, otherwise use global prompt
+  let cvScreeningPromptText = cvSecretPrompt || "";
+  
+  if (!cvScreeningPromptText) {
+    const cvScreeningPromptData = await db.collection("global-settings").findOne(
+      {
+        name: "global-settings",
       },
-    }
-  );
-  const cvScreeningPromptText =
-    cvScreeningPromptData?.cv_screening_prompt?.prompt;
+      {
+        projection: {
+          cv_screening_prompt: 1,
+        },
+      }
+    );
+    cvScreeningPromptText = cvScreeningPromptData?.cv_screening_prompt?.prompt || "";
+  }
 
   let parsedCV = "";
 
   cvData.digitalCV.forEach((section) => {
     parsedCV += `${section.name}\n${section.content}\n`;
   });
+
+  // Format pre-screening answers if provided
+  let preScreeningSection = "";
+  if (preScreeningAnswers) {
+    preScreeningSection = "\n\nPre-Screening Questions & Answers:\n";
+    
+    // Get career data to map question IDs to actual questions
+    const careerData = await db.collection("careers").findOne({
+      _id: interviewData.careerID,
+    });
+    
+    if (careerData?.preScreeningQuestions) {
+      Object.entries(preScreeningAnswers).forEach(([key, answer]) => {
+        // Extract question ID from key (format: "question_<uuid>")
+        const questionId = key.replace("question_", "");
+        const question = careerData.preScreeningQuestions.find(
+          (q: any) => q.id === questionId
+        );
+        
+        if (question) {
+          let formattedAnswer = answer;
+          
+          // Format answer based on question type
+          if (question.type === "checkbox" && Array.isArray(answer)) {
+            formattedAnswer = answer.join(", ");
+          } else if (question.type === "range" && typeof answer === "object" && answer !== null) {
+            formattedAnswer = `${(answer as any).min} - ${(answer as any).max}`;
+          }
+          
+          preScreeningSection += `Q: ${question.question}\nA: ${formattedAnswer}\n\n`;
+        }
+      });
+    }
+  }
 
   const screeningPrompt = `
     You are a helpful AI assistant.
@@ -65,7 +103,7 @@ export async function POST(request: Request) {
 
     Applicant CV:
       ${parsedCV}
-
+    ${preScreeningSection}
     Processing Steps:
       ${cvScreeningPromptText}
 

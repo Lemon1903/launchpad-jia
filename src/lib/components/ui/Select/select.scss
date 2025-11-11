@@ -90,6 +90,10 @@
   max-height: var(--radix-select-content-available-height);
   overflow-x: hidden;
   overflow-y: auto;
+  box-shadow:
+    0 50px 100px rgba(50, 50, 93, 0.1),
+    0 15px 35px rgba(50, 50, 93, 0.15),
+    0 5px 15px rgba(0, 0, 0, 0.1);
 
   /* Animation states */
   &[data-state="open"] {
@@ -154,6 +158,8 @@
 }
 
 [data-slot="select-viewport"] {
+  box-sizing: border-box;
+  background-color: white;
   padding: 0.625rem;
 
   &[data-position="popper"] {
