@@ -1,3 +1,4 @@
+import sanitizeHtml from "sanitize-html";
 import * as z from "zod";
 
 import { salarySchema } from "@/lib/schemas/salarySchema";
@@ -7,6 +8,15 @@ import {
   QuestionType,
   SCREENING_SETTING_VALUES,
 } from "@/lib/utils/careerConstants";
+
+// Sanitize HTML input to prevent XSS
+const sanitizeHtmlInput = (v: unknown): string => {
+  if (typeof v !== "string") return "";
+  return sanitizeHtml(v, {
+    allowedTags: ['p', 'br', 'strong', 'em', 'u', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+    allowedAttributes: {},
+  });
+};
 
 // Base schema shared by all question types
 const baseQuestionSchema = z.object({

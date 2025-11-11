@@ -1,9 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
+import sanitizeHtml from "sanitize-html";
 
 import { CreateCareerPayload } from "@/lib/api";
 import { createCareer, getActiveCareerCount } from "@/lib/mongoDB/career-repository";
 import { getOrganizationDetails } from "@/lib/mongoDB/organization-repository";
 import { careerFormSchema } from "@/lib/schemas/careerFormSchema";
+
+/**
+ * Sanitize HTML input to prevent XSS attacks
+ */
+function sanitizeHtmlInput(value: unknown): string {
+  if (typeof value !== "string") return "";
+  return sanitizeHtml(value, {
+    allowedTags: ['p', 'br', 'strong', 'em', 'u', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+    allowedAttributes: {},
+  });
+}
+
+/**
+ * Recursively sanitize all string values in an object
+ */
+function sanitizeObject(obj: any): any {
+  if (typeof obj === "string") {
+    return sanitizeHtmlInput(obj);
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(sanitizeObject);
+  }
+  if (obj && typeof obj === "object") {
+    const sanitized: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      sanitized[key] = sanitizeObject(value);
+    }
+    return sanitized;
+  }
+  return obj;
+}
 
 /**
  * POST /api/careers
@@ -40,6 +72,9 @@ export async function POST(request: NextRequest) {
 
     const validatedData = validated.data;
 
+    // Sanitize HTML content to prevent XSS attacks
+    const sanitizedData = sanitizeObject(validatedData);
+
     // Check job limit only for active careers
     if (status === "active") {
       const orgDetails = await getOrganizationDetails(orgID);
@@ -64,7 +99,7 @@ export async function POST(request: NextRequest) {
 
     // Create career with the provided status (draft, inactive, or active)
     const createdCareer = await createCareer({
-      ...validatedData,
+      ...sanitizedData,
       status,
       orgID,
       step,
@@ -94,7 +129,7 @@ export async function POST(request: NextRequest) {
  * List careers with optional filtering
  * Query params: status, orgID, page, limit
  */
-export async function GET(request: NextRequest, { params }: { params: {} }) {
+export async function GET(request: NextRequest) {
   // TODO: Copy the implementation from /api/get-careers
   return NextResponse.json({ message: "Use /api/get-careers for listing careers" });
 }
